@@ -71,23 +71,6 @@ def multiple_profile(T,nb_profiles, densities, freq_centers, line_strengths, deg
 	alpha_sum = np.sum(alphas, axis = 0)
 	return np.exp(-alpha_sum*L), alpha_sum
 
-
-# N = 1e19
-# freq_center = -1.371
-# line_strength = cf_2
- 
-# deg = deg_85
-
-# profile, alpha = single_profile(T,N,freq_center,line_strength,deg, freqs)
-# write2file(DATA_PATH+'/Test/test_profile_2.gpt', freqs, profile, alpha)
-
-
-
-# profile_sum, alpha_sum = multiple_profile(T, 4, densities, freq_centers, line_strengths, degs, freqs)
-# write2file(DATA_PATH+'/Test/test_profile_sum.gpt', freqs, profile_sum, alpha_sum)
-
-
-
 def residual(x, *args):
 	"""
 	Computes the residual between the voigt profile
@@ -143,7 +126,7 @@ def fit(filename,x0, *args):
 		extra_params = args[5]
 
 	profile_fit, alpha_fit = multiple_profile(T,4,result[:4], result[4:], line_strengths, degs, freqs)
-	write2file(DATA_PATH+'/Test/'+filename, freqs, profile_fit, alpha_fit)
+	write2file(filename, freqs, profile_fit, alpha_fit)
 
 	logfile = DATA_PATH+'/Test/fit_log.out'
 	with open(logfile, 'a') as f:
