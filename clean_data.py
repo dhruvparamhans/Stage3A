@@ -23,13 +23,7 @@ def write2file(filename, *args):
 		for t in x:
 			line  = ' '.join(str(w) for w in t)
 			f.write(line + '\n')
-	print "Written data to file {}:".format(filename)
-
-def laser_baseline(x,a=0.0107,b=63.2908):
-	"""
-	Variation of laser power as wavelength increases
-	"""
-	return a*x+b 
+	print "Written data to file : {}\n".format(filename)
 
 def clip_and_smooth(raw, cutoff1, cutoff2, set_offset=False, offset=3, max_freq = 384.2390, min_freq = 384.2230, mid_freq = 384.231, resolution=16./1197):
 	## Remove the data which is not required for fit. 
@@ -40,20 +34,18 @@ def clip_and_smooth(raw, cutoff1, cutoff2, set_offset=False, offset=3, max_freq 
 	else:
 		temp = raw[cutoff1:cutoff2]
 	#max_freq = max_freq - (resolution*cutoff/1000)
-	max_freq_detuned = 8.0
-	min_freq_detuned = -8.0
+	max_freq_detuned = 7.0
+	min_freq_detuned = -7.0
 	step = (max_freq_detuned - min_freq_detuned)/len(temp)
 	#mid_freq_temp = (max_freq+min_freq_temp)/2
 	#print mid_freq_temp
 	freqs = np.arange(min_freq_detuned, max_freq_detuned, step)
-	#freqs = np.linspace(-max_freq, max_freq, 2*max_freq // resolution)
-	#freqs -= mid_freq
-	#freqs *= 1000
-	## Smooth the data using a Savgol Filter. 
-	smoothed = savgol_filter(temp,7,5)
-	## Remove baseline 
-	# baseline_to_divide= laser_baseline(np.asarray(range(len(temp))))
-	# smoothed = np.asarray(smoothed)/baseline_to_divide
+	## Baseline correction
+	# def baseline(x):
+	# 	return x*(temp[1] - temp[0]) + temp[0]
+	baseline = lambda x: x*((np.max(temp)-temp[0])/(1.0*len(temp))) + temp[0]
+	temp = np.asarray(temp)/baseline(np.asarray(range(len(temp))))
+	smoothed = savgol_filter(temp,3,1)
 	smoothed -= np.min(smoothed)
 	smoothed /= np.max(smoothed)
 	return freqs, smoothed, list(reversed(smoothed))
