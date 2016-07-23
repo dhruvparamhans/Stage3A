@@ -35,8 +35,8 @@ params.add('f1', value = freq_centers[0], vary=True)
 params.add('f2', value = freq_centers[1], vary=True)
 params.add('diff1', value = 3.035, vary = False)
 params.add('diff2', value = 6.834, vary = False)
-params.add('f3', value = freq_centers[2], vary=True, expr = 'diff1-f1')
-params.add('f4', value = freq_centers[3], vary=True, expr = 'diff2-f2')
+params.add('f3', value = freq_centers[2], vary=True, expr = 'diff1+f1')
+params.add('f4', value = freq_centers[3], vary=True, expr = 'diff2+f2')
 
 minner = Minimizer(residue, params, fcn_args=(detunings, transmission))
 
