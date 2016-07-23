@@ -5,15 +5,14 @@ from datetime import datetime
 from utils import *
 
 
-def single_profile(T, freq_center, line_strength, deg, freqs, L = 15e-2, N_fit = False, N = 1.0):
+def single_profile(T, freq_center, line_strength, deg, freqs, L = 15e-2):
 	profile = []
 	temp = []
 	u = np.sqrt(2*k_B*T/m)
 	ku = k*u
 	ku /= 1e9
 	pre_factor = np.sqrt(np.pi/4)*d**2/(h_bar*epsilon_0*u*deg)
-	if N_fit:
-		N = atomic_density(T,vapor_pressure(T)[1])
+	N = atomic_density(T,vapor_pressure(T)[1])
 	for freq in freqs:
 		det = 2*np.pi*freq/ku
 		a = Gamma/ku
@@ -23,13 +22,12 @@ def single_profile(T, freq_center, line_strength, deg, freqs, L = 15e-2, N_fit =
 		temp.append(alpha)
 	return np.asarray(profile), np.asarray(temp)
 
-def multiple_profile(T,freq_centers, line_strengths, degs, freqs, L=15e-2, nb_profiles=4, N_fit=False, N=1.0):
+def multiple_profile(T,freq_centers, freqs, line_strengths=line_strengths, degs=degs,  L=15e-2, nb_profiles=4):
 	profiles = []
 	alphas = []
 	weights = [0.28, 0.72, 0.72, 0.28]
 	for i in range(nb_profiles):
-		temp_profile, temp_alpha = single_profile(T,densities[0], freq_centers[i], line_strengths[i], degs[i],
-									freqs[i], N_fit, N)
+		temp_profile, temp_alpha = single_profile(T,freq_centers[i], line_strengths[i], degs[i],freqs)
 		profiles.append(weights[i]*temp_profile)
 		alphas.append(weights[i]*temp_alpha)
 	profiles = np.array(profiles)

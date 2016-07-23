@@ -38,6 +38,9 @@ cf_2 = 1./3 + 35./81 + 28./81
 cf_3 = 10./81+ 35./81 + 1.
 cf_4 = 1./9 + 5./18 + 5./18
 
+line_strengths = [cf_1, cf_2, cf_3, cf_4]
+degs = [deg_87, deg_85, deg_85, deg_87]
+
 
 def normalize(data):
     data -= np.min(np.asarray(data))
@@ -45,7 +48,8 @@ def normalize(data):
     return np.asarray(data)
 
 def vapor_pressure(T):
-    logp = 15.88253 - (4529.635/T) + 0.00058663*T - 2.99138*np.log10(T)
+    # logp = 15.88253 - (4529.635/T) + 0.00058663*T - 2.99138*(np.log10(T))
+    logp = 15.88253 - (4529.635/T) + 0.00058663*T
     return logp, pow(10,logp)
 def atomic_density(T,p):
     return 133.323*p/(k_B*T)
