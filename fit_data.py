@@ -30,7 +30,7 @@ def multiple_profile(T,freq_centers, freqs, line_strengths=line_strengths, degs=
 		temp_profile, temp_alpha = single_profile(T,freq_centers[i], line_strengths[i], degs[i],freqs)
 		profiles.append(weights[i]*temp_profile)
 		alphas.append(weights[i]*temp_alpha)
-	profiles = np.array(profiles)
+	profiles = np.asarray(profiles)
 	alphas = np.asarray(alphas)
 	alpha_sum = np.sum(alphas, axis = 0)
 	return np.exp(-alpha_sum*L), alpha_sum
