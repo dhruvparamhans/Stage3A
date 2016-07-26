@@ -12,7 +12,7 @@ def single_profile(T, freq_center, line_strength, deg, freqs, L = 15e-2):
 	ku = k*u
 	ku /= 1e9
 	pre_factor = np.sqrt(np.pi/4)*d**2/(h_bar*epsilon_0*u*deg)
-	N = atomic_density(T,vapor_pressure(T)[1])
+	N = atomic_density(T)
 	for freq in freqs:
 		det = 2*np.pi*freq/ku
 		a = Gamma/ku

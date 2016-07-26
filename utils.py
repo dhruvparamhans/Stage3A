@@ -51,7 +51,8 @@ def vapor_pressure(T):
     logp = 15.88253 - (4529.635/T) + 0.00058663*T - 2.99138*(np.log10(T))
     # logp = 15.88253 - (4529.635/T) + 0.00058663*T
     return logp, pow(10,logp)
-def atomic_density(T,p):
+def atomic_density(T):
+    p = vapor_pressure(T)[1]
     return 133.323*p/(k_B*T)
 
 def get_data(filename):
