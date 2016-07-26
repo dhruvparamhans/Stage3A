@@ -2,7 +2,7 @@ from scipy.special import erfc, wofz
 from scipy.optimize import fmin, leastsq
 from datetime import datetime
 import numpy as np
-
+import csv
 ## Constants
 logfile = 'fit_log.out'
 ## Wavelength
@@ -51,6 +51,7 @@ def vapor_pressure(T):
     logp = 15.88253 - (4529.635/T) + 0.00058663*T - 2.99138*(np.log10(T))
     # logp = 15.88253 - (4529.635/T) + 0.00058663*T
     return logp, pow(10,logp)
+
 def atomic_density(T):
     p = vapor_pressure(T)[1]
     return 133.323*p/(k_B*T)
@@ -65,8 +66,46 @@ def get_data(filename):
     spectra = np.asarray(data_list)
     return spectra[:,0], spectra[:,1]
 
+def average_by_factor(data, factor = 25):
+    data_clip  = []
+    divide = len(data)/factor
+    for i in range(divide):
+        data_clip.append(np.average(data[factor*i:factor*(i+1)]))
+    return data_clip
 
+def get_csv(filename,factor=25):
+    data_list  =[]
+    fileReader  = csv.reader(open(filename), delimiter=' ')
 
+    for row in fileReader:
+        x = map(lambda y: float(y), row)
+        data_list.append(x)
+    spectra = np.asarray(data_list)[:,1]
+    reference = np.asarray(data_list)[:,2]
+    sas = np.asarray(data_list)[:,4]
+    ramp = np.asarray(data_list)[:,3]
+
+    spectra_reverse = list(reversed(spectra))
+    reference_reverse = list(reversed(reference))
+    sas_reverse = list(reversed(sas))
+    ramp_reverse = list(reversed(ramp))
+
+    reference = average_by_factor(reference_reverse, factor)
+    spectra = average_by_factor(spectra_reverse,factor)
+    sas = average_by_factor(sas_reverse,factor)
+    ramp = average_by_factor(ramp_reverse,factor)
+
+    return spectra, reference, sas, ramp
+
+def renormalize(data):
+    start_index=0
+    stop_index=len(data)-1
+    slope = (data[stop_index]-data[start_index])/(len(data))
+    norm_line = []
+    for i in range(len(data)):
+        norm_line.append(slope*(i-start_index)+data[start_index])
+    data_norm = np.asarray(data)/np.asarray(norm_line)
+    return data_norm
 
 def gnuplot(filename,xlabel, ylabel,title,picname):
     import subprocess
