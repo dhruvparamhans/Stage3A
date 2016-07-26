@@ -66,6 +66,8 @@ def get_data(filename):
     return spectra[:,0], spectra[:,1]
 
 
+
+
 def gnuplot(filename,xlabel, ylabel,title,picname):
     import subprocess
     proc = subprocess.Popen(['gnuplot','-p'],
