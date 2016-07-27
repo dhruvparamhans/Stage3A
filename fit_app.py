@@ -12,16 +12,17 @@ import csv
 
 
 filename = 'data/p40uw_144_raw.csv'
-
 spectra, reference, sas, ramp = get_csv(filename,factor=100)
 
-
+## Data Sources
 
 source_spectra = ColumnDataSource(data = dict(x = range(len(spectra)), y = spectra))
 source_fit = ColumnDataSource(data = dict(x = range(len(reference)), y = []))
 
 source_sas = ColumnDataSource(data=dict(x=range(len(sas)), y=sas))
 source_ramp = ColumnDataSource(data=dict(x=range(len(ramp)), y = ramp))
+
+## Create plots
 
 plot1 = figure(plot_height = 400, plot_width = 600, title = "Rescaling",
              tools = 'pan, reset, save, wheel_zoom,hover, box_zoom')
@@ -37,14 +38,12 @@ plot2 = figure(plot_height = 400, plot_width = 600, title = "Fit",
 plot2.line('x', 'y', source = source_spectra, line_width = 3, line_alpha=0.6, line_color = 'blue')
 plot2.line('x', 'y', source = source_fit, line_width = 3, line_alpha = 0.6, line_color = 'red')
 
+
+## Create Widgets
 start_input = TextInput(title = "Starting Index for Clipping", value = str(0))
 end_input = TextInput(title="End Index for Clipping", value = str(len(sas)))
-# command_box = TextInput(title="Enter Command", value="None")
-
 center_1_input = TextInput(title = "Center for Rb87, lower transition", value = str(0))
 center_2_input = TextInput(title = "Center for Rb87, upper transition", value = str(100))
-
-
 clip_button = Button(label = "Clip", button_type="success")
 rescale_button = Button(label = "Rescale", button_type = "success")
 normalize_button = Button(label = "Normalize", button_type = "success")
@@ -61,7 +60,7 @@ center_2 = Slider(title = "Center 2", value = 0.12, start = -10.0, end = 10.0, s
 center_3 = Slider(title = "Center 3", value = 3.0, start = -10.0, end = 10.0, step = 0.05, callback_policy = 'mouseup')
 center_4 = Slider(title = "Center 4", value = 6.8, start = -10.0, end = 10.0, step = 0.05, callback_policy = 'mouseup')
 
-
+## Update Callbacks
 def update_inputs(attrname, old, new):
     start = int(start_input.value)
     end = int(end_input.value)
@@ -168,14 +167,14 @@ def update_data(attrname, old,new):
 
 for w  in [temp_slider, center_1, center_2, center_3, center_4]:
     w.on_change('value', update_data)
-# inputs = WidgetBox(start_input, end_input,clip_button, center_1_input, center_2_input, rescale_button)
 
+
+## Final layout
 column1 = WidgetBox(start_input, end_input, clip_button)
 column2 = WidgetBox(center_1_input, center_2_input, rescale_button)
 column3 = WidgetBox(residue,temp_slider,center_1, center_2)
 column4 = WidgetBox(densities, center_3, center_4, normalize_button)
 
-# l = layout([[inputs,plot],])
 
 l = layout([[plot1,plot2],[column1,column2, column3,column4],])
 
