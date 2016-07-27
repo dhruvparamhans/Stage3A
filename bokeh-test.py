@@ -11,9 +11,9 @@ from bokeh.plotting import figure,show, output_file
 import csv
 
 
-filename = 'data/p400uw_144_raw.csv'
+filename = 'data/p40uw_144_raw.csv'
 
-spectra, reference, sas, ramp = get_csv(filename,factor=25)
+spectra, reference, sas, ramp = get_csv(filename,factor=100)
 
 
 
