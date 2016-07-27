@@ -6,15 +6,16 @@ import numpy as np
 from bokeh.io import curdoc
 from bokeh.layouts import row, widgetbox,layout
 from bokeh.models import ColumnDataSource, WidgetBox
-from bokeh.models.widgets import Slider, TextInput, Button
+from bokeh.models.widgets import Slider, TextInput, Button, Select
 from bokeh.plotting import figure,show, output_file
 import csv
 
+import glob
+filenames = glob.glob('data/*.csv')
 
-filename = 'data/p40uw_144_raw.csv'
+filename = filenames[0]
 spectra, reference, sas, ramp = get_csv(filename,factor=100)
 
-## Data Sources
 
 source_spectra = ColumnDataSource(data = dict(x = range(len(spectra)), y = spectra))
 source_fit = ColumnDataSource(data = dict(x = range(len(reference)), y = []))
@@ -22,21 +23,18 @@ source_fit = ColumnDataSource(data = dict(x = range(len(reference)), y = []))
 source_sas = ColumnDataSource(data=dict(x=range(len(sas)), y=sas))
 source_ramp = ColumnDataSource(data=dict(x=range(len(ramp)), y = ramp))
 
-## Create plots
-
 plot1 = figure(plot_height = 400, plot_width = 600, title = "Rescaling",
-             tools = 'pan, reset, save, wheel_zoom,hover, box_zoom')
+                 tools = 'pan, reset, save, wheel_zoom,hover, box_zoom')
 
-plot1.line('x', 'y', source = source_sas, line_width = 3, line_alpha = 0.6, line_color = 'red')
-plot1.line('x', 'y', source = source_ramp, line_width = 3, line_alpha = 0.6, line_color = 'green')
-
+plot_sas = plot1.line('x', 'y', source = source_sas, line_width = 3, line_alpha = 0.6, line_color = 'red')
+plot_ramp = plot1.line('x', 'y', source = source_ramp, line_width = 3, line_alpha = 0.6, line_color = 'green')
 
 
 plot2 = figure(plot_height = 400, plot_width = 600, title = "Fit",
-                tools = 'pan, reset, save, wheel_zoom, hover, box_zoom')
+                    tools = 'pan, reset, save, wheel_zoom, hover, box_zoom')
 
-plot2.line('x', 'y', source = source_spectra, line_width = 3, line_alpha=0.6, line_color = 'blue')
-plot2.line('x', 'y', source = source_fit, line_width = 3, line_alpha = 0.6, line_color = 'red')
+plot_spectra = plot2.line('x', 'y', source = source_spectra, line_width = 3, line_alpha=0.6, line_color = 'blue')
+plot_fit = plot2.line('x', 'y', source = source_fit, line_width = 3, line_alpha = 0.6, line_color = 'red')
 
 
 ## Create Widgets
@@ -59,6 +57,9 @@ center_1 = Slider(title = "Center 1", value = 0.0, start = -10.0, end = 10.0, st
 center_2 = Slider(title = "Center 2", value = 0.12, start = -10.0, end = 10.0, step = 0.05, callback_policy = 'mouseup')
 center_3 = Slider(title = "Center 3", value = 3.0, start = -10.0, end = 10.0, step = 0.05, callback_policy = 'mouseup')
 center_4 = Slider(title = "Center 4", value = 6.8, start = -10.0, end = 10.0, step = 0.05, callback_policy = 'mouseup')
+
+
+
 
 ## Update Callbacks
 def update_inputs(attrname, old, new):
@@ -131,6 +132,7 @@ def update_normalize():
     end = int(end_input.value)
     x = source_spectra.data['y']
     spectra_norm = renormalize(x)
+    spectra_norm = normalize(spectra_norm)
     source_spectra.data['y'] = spectra_norm
     source_fit.data['y'] = spectra_norm
 
