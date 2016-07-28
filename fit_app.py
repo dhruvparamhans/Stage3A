@@ -3,7 +3,7 @@ from utils import *
 
 import numpy as np
 
-from bokeh.io import curdoc
+from bokeh.io import curdoc, show
 from bokeh.layouts import row, widgetbox,layout
 from bokeh.models import ColumnDataSource, WidgetBox
 from bokeh.models.widgets import Slider, TextInput, Button, Select
