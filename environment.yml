@@ -1,0 +1,6 @@
+name: nonlinearfit
+dependencies:
+	-flask
+	-bokeh
+	-numpy
+	-glob
