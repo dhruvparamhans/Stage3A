@@ -1,6 +1,6 @@
-import os 
-import fnmatch 
-import numpy as np 
+import os
+import fnmatch
+import numpy as np
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 
@@ -17,18 +17,12 @@ def get_data(filename):
 def mirrored(maxval, inc):
 	return np.linspace(-maxval, maxval, 2*maxval // inc)
 
-def write2file(filename, *args):
-	x = zip(*args)
-	with open(filename, 'w-') as f:
-		for t in x:
-			line  = ' '.join(str(w) for w in t)
-			f.write(line + '\n')
-	print "Written data to file : {}\n".format(filename)
+
 
 def clip_and_smooth(raw, cutoff1, cutoff2, set_offset=False, offset=3, max_freq = 384.2390, min_freq = 384.2230, mid_freq = 384.231, resolution=16./1197):
-	## Remove the data which is not required for fit. 
-	## Usually corresponds to the begin of the scan 
-	## Will need to be changed once we trigger the scan with the signal from the laser 
+	## Remove the data which is not required for fit.
+	## Usually corresponds to the begin of the scan
+	## Will need to be changed once we trigger the scan with the signal from the laser
 	if set_offset:
 		temp = raw[cutoff1+offset:cutoff2]
 	else:
@@ -52,7 +46,7 @@ def clip_and_smooth(raw, cutoff1, cutoff2, set_offset=False, offset=3, max_freq 
 
 def find_files(directory, pattern):
 	"""
-	Function to recursively find files with a given extension 
+	Function to recursively find files with a given extension
 	within a given directory
 	"""
 	for root, dirs, files in os.walk(directory):

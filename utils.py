@@ -73,6 +73,14 @@ def average_by_factor(data, factor = 25):
         data_clip.append(np.average(data[factor*i:factor*(i+1)]))
     return data_clip
 
+def write2file(filename, *args):
+    x = zip(*args)
+    with open(filename, 'w-') as f:
+        for t in x:
+            line  = ' '.join(str(w) for w in t)
+            f.write(line + '\n')
+    #print "Written data to file : {}\n".format(filename)
+
 def get_csv(filename,factor=25):
     data_list  =[]
     fileReader  = csv.reader(open(filename), delimiter=' ')

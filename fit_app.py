@@ -11,6 +11,9 @@ from bokeh.plotting import figure,show, output_file
 import csv
 
 import glob
+from datetime import datetime
+import os
+import json
 filenames = glob.glob('data/*.csv')
 
 filename = filenames[0]
@@ -42,15 +45,22 @@ start_input = TextInput(title = "Starting Index for Clipping", value = str(0))
 end_input = TextInput(title="End Index for Clipping", value = str(len(sas)))
 center_1_input = TextInput(title = "Center for Rb87, lower transition", value = str(0))
 center_2_input = TextInput(title = "Center for Rb87, upper transition", value = str(100))
+file_name_input = TextInput(title = "Filename to Write", value = ' ')
+
+
 clip_button = Button(label = "Clip", button_type="success")
 rescale_button = Button(label = "Rescale", button_type = "success")
 normalize_button = Button(label = "Normalize", button_type = "success")
+write2file_button = Button(label = "Write to file", button_type = "success")
+
 
 start = int(start_input.value)
 end = int(end_input.value)
 
 center_1 = int(center_1_input.value)
 center_2 = int(center_2_input.value)
+
+file2write = file_name_input.value
 
 temp_slider = Slider(title="Temperature", value = 130.0, start = 0.0, end = 200.0, step = 0.1, callback_policy = 'mouseup')
 center_1 = Slider(title = "Center 1", value = 0.0, start = -10.0, end = 10.0, step = 0.05, callback_policy = 'mouseup')
@@ -170,10 +180,47 @@ def update_data(attrname, old,new):
 for w  in [temp_slider, center_1, center_2, center_3, center_4]:
     w.on_change('value', update_data)
 
+def get_filename(attrname, old, new):
+    file2write = file_name_input.value
+
+file_name_input.on_change('value', get_filename)
+
+
+def file_write_callback():
+    ## This will serve to write data to file
+    ## We will create two files: one for the experimental and the fit curve
+    ## the second one for all the parameters of the app, relevant to the fit
+    ## The data file is saved as a gpt file
+    ## the params file is saved as a json file
+    ## Json is chosen to extract data easily for further analysis
+    current_path = os.getcwd()
+    newpath = current_path + '/fit/'
+    if not os.path.isdir(newpath):
+        os.makedirs(newpath)
+    file2write  = file_name_input.value
+    if file2write == '':
+        file2write = 'fit_data_{}'.format(str(datetime.now()))
+    file1 = newpath + file2write + '.gpt'
+    file2 = newpath + file2write + '_params.txt'
+
+    params = {}
+    params['temperature'] = temp_slider.value
+    params['error'] = residue.value
+    params['density'] = densities.value
+    params['center_1'] = center_1.value
+    params['center_2'] = center_2.value
+    params['center_3'] = center_3.value
+    params['center_4'] = center_4.value
+
+    with open(file1+'_params.json', 'w') as f:
+        json.dump(params, f)
+    write2file(file1, source_spectra.data['x'], source_spectra.data['y'], source_fit.data['y'])
+
+write2file_button.on_click(file_write_callback)
 
 ## Final layout
-column1 = WidgetBox(start_input, end_input, clip_button)
-column2 = WidgetBox(center_1_input, center_2_input, rescale_button)
+column1 = WidgetBox(start_input, end_input, clip_button, file_name_input)
+column2 = WidgetBox(center_1_input, center_2_input, rescale_button, write2file_button)
 column3 = WidgetBox(residue,temp_slider,center_1, center_2)
 column4 = WidgetBox(densities, center_3, center_4, normalize_button)
 
