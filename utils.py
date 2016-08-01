@@ -75,7 +75,7 @@ def average_by_factor(data, factor = 25):
 
 def write2file(filename, *args):
     x = zip(*args)
-    with open(filename, 'w-') as f:
+    with open(filename, 'w') as f:
         for t in x:
             line  = ' '.join(str(w) for w in t)
             f.write(line + '\n')
