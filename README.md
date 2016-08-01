@@ -25,7 +25,7 @@ This should give something like
 		
 Once this has been verified, run the app by typing in a shell 
 
-		bokeh serve --show fit_app.py
+		bokeh serve --show fit_app/fit_app.py
 
 This should automatically open a browser window where the app will run. Usually the address is 
 
