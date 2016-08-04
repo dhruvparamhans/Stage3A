@@ -83,15 +83,15 @@ def write2file(filename, *args):
 
 def get_csv(filename,factor=25):
     data_list  =[]
-    fileReader  = csv.reader(open(filename), delimiter=' ')
+    fileReader  = csv.reader(open(filename), delimiter='\t')
 
     for row in fileReader:
         x = map(lambda y: float(y), row)
         data_list.append(x)
-    spectra = np.asarray(data_list)[:,1]
-    reference = np.asarray(data_list)[:,2]
-    sas = np.asarray(data_list)[:,4]
-    ramp = np.asarray(data_list)[:,3]
+    spectra = np.asarray(data_list)[:,0]
+    reference = np.asarray(data_list)[:,1]
+    sas = np.asarray(data_list)[:,3]
+    ramp = np.asarray(data_list)[:,2]
 
     spectra_reverse = list(reversed(spectra))
     reference_reverse = list(reversed(reference))

@@ -14,7 +14,13 @@ import glob
 from datetime import datetime
 import os
 import json
-filenames = glob.glob('data/*.csv')
+
+DATAPATH = '/home/dhruv/Documents/Stage3A/Absorption_Data/august/02_Aug'
+os.chdir(DATAPATH)
+
+filenames = glob.glob('*.csv')
+
+print filenames
 
 filename = filenames[0]
 spectra, reference, sas, ramp = get_csv(filename,factor=100)
@@ -193,7 +199,8 @@ def file_write_callback():
     ## The data file is saved as a gpt file
     ## the params file is saved as a json file
     ## Json is chosen to extract data easily for further analysis
-    current_path = os.getcwd()
+    # current_path = os.getcwd()
+    cuurent_path = DATAPATH
     newpath = current_path + '/fit/'
     if not os.path.isdir(newpath):
         os.makedirs(newpath)
