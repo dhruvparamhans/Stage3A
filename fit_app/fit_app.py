@@ -15,15 +15,15 @@ from datetime import datetime
 import os
 import json
 
-DATAPATH = '/home/dhruv/Documents/Stage3A/Absorption_Data/august/02_Aug'
+DATAPATH = '/home/dhruv/Documents/Stage3A/Absorption_Data/august/03_Aug'
 os.chdir(DATAPATH)
+print os.getcwd()
 
-filenames = glob.glob('*.csv')
-
-print filenames
-
-filename = filenames[0]
-spectra, reference, sas, ramp = get_csv(filename,factor=100)
+filenames = glob.glob('*_130.7.csv')
+print len(filenames)
+filename = filenames[4]
+print filename
+spectra, reference, sas, ramp = get_csv(filename,factor=50)
 
 
 source_spectra = ColumnDataSource(data = dict(x = range(len(spectra)), y = spectra))
@@ -51,7 +51,7 @@ start_input = TextInput(title = "Starting Index for Clipping", value = str(0))
 end_input = TextInput(title="End Index for Clipping", value = str(len(sas)))
 center_1_input = TextInput(title = "Center for Rb87, lower transition", value = str(0))
 center_2_input = TextInput(title = "Center for Rb87, upper transition", value = str(100))
-file_name_input = TextInput(title = "Filename to Write", value = ' ')
+file_name_input = TextInput(title = "Filename to Write", value = 'fit_' + filename.replace('.csv', ''))
 
 
 clip_button = Button(label = "Clip", button_type="success")
@@ -199,8 +199,10 @@ def file_write_callback():
     ## The data file is saved as a gpt file
     ## the params file is saved as a json file
     ## Json is chosen to extract data easily for further analysis
-    # current_path = os.getcwd()
-    cuurent_path = DATAPATH
+    DATAPATH = '/home/dhruv/Documents/Stage3A/Absorption_Data/august/03_Aug'
+    current_path = DATAPATH
+    print current_path
+    # cuurent_path = DATAPATH
     newpath = current_path + '/fit/'
     if not os.path.isdir(newpath):
         os.makedirs(newpath)
